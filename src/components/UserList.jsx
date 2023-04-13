@@ -12,7 +12,7 @@ const UserList = () => {
   } = useFetch()
 
   useEffect(() => {
-    fetchData(import.meta.env.VITE_API_URL)
+    fetchData(`${import.meta.env.VITE_API_URL}/users`)
   }, [])
 
   return (
@@ -28,7 +28,7 @@ const UserList = () => {
           <div>Loading...</div>
         </>
       )}
-      {error && <div>Error: {error}</div>}
+      {error && <div className='error'>Error: {error}</div>}
       {data && (
         <ul className='card'>
           <h3>Users:</h3>

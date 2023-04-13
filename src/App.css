@@ -49,6 +49,11 @@
   border: solid 1px purple;
 }
 
+.error {
+  color: red;
+  margin: 10px;
+}
+
 .read-the-docs {
   color: #888;
 }
