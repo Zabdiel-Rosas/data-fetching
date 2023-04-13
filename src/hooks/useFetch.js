@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 export const useFetch = () => {
   const [data, setData] = useState(null)
@@ -11,14 +12,13 @@ export const useFetch = () => {
     const abortController = new AbortController()
     setController(abortController)
 
-    fetch(url, { signal: abortController.signal })
-      .then((response) => response.json())
-      .then((data) => setData(data))
+    axios.get(url, { signal: abortController.signal })
+      .then((response) => setData(response.data))
       .catch((error) => {
-        if (error.name === 'AbortError') {
-          console.log('Request Canceled')
+        if (error.name === 'CanceledError') {
+          console.log('Request has been canceled by user')
         } else {
-          setError(error)
+          setError(error.message)
         }
       })
       .finally(() => setLoading(false))
