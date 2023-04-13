@@ -7,21 +7,22 @@ export const useFetch = () => {
   const [error, setError] = useState(null)
   const [controller, setController] = useState(null)
 
-  const fetchData = (url) => {
+  const fetchData = async (url) => {
     setLoading(true)
     const abortController = new AbortController()
     setController(abortController)
 
-    axios.get(url, { signal: abortController.signal })
-      .then((response) => setData(response.data))
-      .catch((error) => {
-        if (error.name === 'CanceledError') {
-          console.log('Request has been canceled by user')
-        } else {
-          setError(error.message)
-        }
-      })
-      .finally(() => setLoading(false))
+    try {
+      const response = await axios.get(url, { signal: abortController.signal })
+      setData(response.data)
+    } catch (error) {
+      if (error.name === 'CanceledError') {
+        console.log('Request has been canceled by user')
+      } else {
+        setError(error.message)
+      }
+    }
+    setLoading(false)
 
     return () => abortController.abort()
   }
