@@ -1,26 +1,37 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-export function useFetch(url) {
+export const useFetch = () => {
   const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [controller, setController] = useState(null)
 
-  useEffect(() => {
-    fetch(url)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json()
-        } else if (response.status === 404) {
-          setError({
-            code: response.status,
-            msg: `Oops!, We couldn't find the resource :(`,
-          })
+  const fetchData = (url) => {
+    setLoading(true)
+    const abortController = new AbortController()
+    setController(abortController)
+
+    fetch(url, { signal: abortController.signal })
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => {
+        if (error.name === 'AbortError') {
+          console.log('Request Canceled')
+        } else {
+          setError(error)
         }
       })
-      .then((data) => data && setData(data))
-      .catch((error) => setError(error))
       .finally(() => setLoading(false))
-  }, [])
 
-  return { data, loading, error }
+    return () => abortController.abort()
+  }
+
+  const handleCancelRequest = () => {
+    if (controller) {
+      controller.abort()
+      setError('Request Canceled')
+    }
+  }
+
+  return { data, loading, error, fetchData, handleCancelRequest }
 }

@@ -37,6 +37,18 @@
   padding: 2em;
 }
 
+.button {
+  background-color: purple;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.button:hover {
+  background-color: white;
+  color: purple;
+  border: solid 1px purple;
+}
+
 .read-the-docs {
   color: #888;
 }
