@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-export function useFetch(url) {
+export const useFetch = () => {
   const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [controller, setController] = useState(null)
 
-  useEffect(() => {
+  const fetchData = (url) => {
+    setLoading(true)
     const abortController = new AbortController()
     setController(abortController)
 
@@ -15,7 +16,7 @@ export function useFetch(url) {
       .then((data) => setData(data))
       .catch((error) => {
         if (error.name === 'AbortError') {
-          console.log('Request Canceled catch')
+          console.log('Request Canceled')
         } else {
           setError(error)
         }
@@ -23,7 +24,7 @@ export function useFetch(url) {
       .finally(() => setLoading(false))
 
     return () => abortController.abort()
-  }, [])
+  }
 
   const handleCancelRequest = () => {
     if (controller) {
@@ -32,5 +33,5 @@ export function useFetch(url) {
     }
   }
 
-  return { data, loading, error, handleCancelRequest }
+  return { data, loading, error, fetchData, handleCancelRequest }
 }

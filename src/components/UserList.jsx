@@ -1,16 +1,28 @@
+import { useEffect } from 'react'
 import { useFetch } from '../hooks/useFetch'
 import '../App.css'
 
 const UserList = () => {
-  const { data, loading, error, handleCancelRequest } = useFetch(
-    import.meta.env.VITE_API_URL
-  )
+  const {
+    data,
+    loading,
+    error,
+    fetchData,
+    handleCancelRequest,
+  } = useFetch()
+
+  useEffect(() => {
+    fetchData(import.meta.env.VITE_API_URL)
+  }, [])
 
   return (
     <>
       {loading && (
         <>
-          <button className='button' onClick={handleCancelRequest}>
+          <button
+            className='button'
+            onClick={handleCancelRequest}
+          >
             Cancel Request
           </button>
           <div>Loading...</div>
